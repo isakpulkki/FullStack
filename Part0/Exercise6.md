@@ -1,5 +1,6 @@
 ## Exercise 0.6
 
+```mermaid
 sequenceDiagram
     participant browser
     participant server
@@ -8,3 +9,4 @@ sequenceDiagram
     activate server
     server-->>browser: HTTP status code 201
     deactivate server
+```

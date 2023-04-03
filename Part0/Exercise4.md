@@ -1,5 +1,6 @@
 ## Exercise 0.4
 
+```mermaid
 sequenceDiagram
     participant browser
     participant server
@@ -32,6 +33,7 @@ sequenceDiagram
     browser->>server: GET https://studies.cs.helsinki.fi/favicon.ico
     activate server
     server-->>browser: Favicon file
-    deactivate server  
+    deactivate server
+```
 
 After sending the POST request, the response header contains the URL which redirects the user back to the same site.
