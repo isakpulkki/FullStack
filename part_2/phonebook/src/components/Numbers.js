@@ -1,9 +1,9 @@
 const Numbers = (props) => {
   return (
     <div>
-      <h3>Numbers</h3>
+      <h3 >Numbers</h3>
       {props.personsToShow.map((person) => (
-        <p>
+        <p key={person.id}>
           {person.name} {person.number}
         </p>
       ))}
