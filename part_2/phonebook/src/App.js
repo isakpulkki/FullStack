@@ -9,6 +9,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+
   useEffect(() => {
     personService
       .getAll()
@@ -19,17 +20,29 @@ const App = () => {
 
   const addName = (event) => {
     event.preventDefault();
-    
+    const newPerson = { name: newName, number: newNumber }
     if (!persons.some((person) => person.name === newName)) {
-      const person = { name: newName, number: newNumber }
       personService
-    .create(person)
+    .create(newPerson)
     .then(newPerson => {   
       setPersons(persons.concat(newPerson));
     })
+
     } else {
-      window.alert(`${newName} is already added to the phonebook.`);
+      const oldPerson = persons.find(person => person.name === newName)
+      personService
+    .update(oldPerson.id, newPerson)
+    .then(updatedPerson => {   
+        setPersons(persons.map(person => person.id !== oldPerson.id ? person : updatedPerson))
     }
+    )
+  }
+};
+
+  const removePerson = (personId) => {
+    personService
+    .remove(personId);
+    setPersons(persons.filter(person => person.id !== personId));
   };
 
   const handleNameChange = (event) => {
@@ -56,7 +69,7 @@ const App = () => {
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       ></NewNumber>
-      <Numbers personsToShow={personsToShow}></Numbers>
+      <Numbers personsToShow={personsToShow} removePerson={removePerson}></Numbers>
     </div>
   );
 };
