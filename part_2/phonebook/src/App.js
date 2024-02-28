@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import NewNumber from "./components/NewNumber";
 import Numbers from "./components/Numbers";
 import Filter from "./components/Filter";
+import Notification from "./components/Notification";
 import personService from "./services/persons";
 
 const App = () => {
@@ -9,6 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     personService
@@ -21,21 +24,34 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault();
     const newPerson = { name: newName, number: newNumber }
-    if (!persons.some((person) => person.name === newName)) {
+    if (persons.some((person) => person.name === newName)) {
+    const oldPerson = persons.find(person => person.name === newName)
+      personService
+    .update(oldPerson.id, newPerson)
+    .then(updatedPerson => {   
+        setPersons(persons.map(person => person.id !== oldPerson.id ? person : updatedPerson))
+        setMessage(newName + "'s number changed.")
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+    }
+    ).catch(error => {
+      setError(oldPerson.name + "'s number is deleted from the server.")
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      setPersons(persons.filter(person => person.id !== oldPerson.id))
+    })
+    } else {
       personService
     .create(newPerson)
     .then(newPerson => {   
       setPersons(persons.concat(newPerson));
     })
-
-    } else {
-      const oldPerson = persons.find(person => person.name === newName)
-      personService
-    .update(oldPerson.id, newPerson)
-    .then(updatedPerson => {   
-        setPersons(persons.map(person => person.id !== oldPerson.id ? person : updatedPerson))
-    }
-    )
+    setMessage(newName + "'s number added.")
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 };
 
@@ -43,6 +59,10 @@ const App = () => {
     personService
     .remove(personId);
     setPersons(persons.filter(person => person.id !== personId));
+    setMessage("Number deleted.")
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   };
 
   const handleNameChange = (event) => {
@@ -63,6 +83,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} error={error} />
       <Filter filter={filter} filterNumbers={filterNumbers}></Filter>
       <NewNumber
         addName={addName}

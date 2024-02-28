@@ -1,9 +1,3 @@
 {
-  "persons": [
-    {
-      "id": "fb10",
-      "name": "Isak P.",
-      "number": "32312-2321321-32"
-    }
-  ]
+  "persons": []
 }
