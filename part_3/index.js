@@ -1,6 +1,13 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
+morgan.token('data',(req,res) => {
+  if (req === 'POST') {
+      JSON.stringify(req.body)
+  }
+})
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
       { 
@@ -66,7 +73,6 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  console.log(Math.floor(Math.random() * 99999))
   const person = {
     name: body.name,
     number: body.number,
