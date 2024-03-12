@@ -4,11 +4,13 @@ const app = express()
 const cors = require('cors')
 app.use(cors())
 const morgan = require('morgan')
+
 morgan.token('data', (req, res) => {
   if (req === 'POST') {
     JSON.stringify(req.body)
   }
 })
+
 app.use(express.json())
 app.use(morgan('tiny'))
 app.use(express.static('build'))
