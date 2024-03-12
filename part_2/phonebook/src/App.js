@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react";
 import NewNumber from "./components/NewNumber";
 import Numbers from "./components/Numbers";
 import Filter from "./components/Filter";
@@ -14,55 +14,62 @@ const App = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    personService
-      .getAll()
-      .then(dbPersons => {
-        setPersons(dbPersons)
-      })
+    personService.getAll().then((dbPersons) => {
+      setPersons(dbPersons);
+    });
   }, []);
 
   const addName = (event) => {
     event.preventDefault();
-    const newPerson = { name: newName, number: newNumber }
+    const newPerson = { name: newName, number: newNumber };
     if (persons.some((person) => person.name === newName)) {
-    const oldPerson = persons.find(person => person.name === newName)
+      const oldPerson = persons.find((person) => person.name === newName);
       personService
-    .update(oldPerson.id, newPerson)
-    .then(updatedPerson => {   
-        setPersons(persons.map(person => person.id !== oldPerson.id ? person : updatedPerson))
-        setMessage(newName + "'s number changed.")
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
-    }
-    ).catch(error => {
-      setError(oldPerson.name + "'s number is deleted from the server.")
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
-      setPersons(persons.filter(person => person.id !== oldPerson.id))
-    })
+        .update(oldPerson.id, newPerson)
+        .then((updatedPerson) => {
+          setPersons(
+            persons.map((person) =>
+              person.id !== oldPerson.id ? person : updatedPerson
+            )
+          );
+          setMessage(newName + "'s number changed.");
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+            setError(error.response.data.error);
+            setTimeout(() => {
+              setError(null);
+            }, 5000);
+        });
     } else {
       personService
-    .create(newPerson)
-    .then(newPerson => {   
-      setPersons(persons.concat(newPerson));
-    })
-    setMessage(newName + "'s number added.")
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  }
-};
+        .create(newPerson)
+        .then((newPerson) => {
+          setPersons(persons.concat(newPerson));
+          setMessage(newName + "'s number added.");
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          setError(error.response.data.error);
+          setTimeout(() => {
+            setError(null);
+          }, 5000);
+          return;
+        });
+    }
+  };
 
   const removePerson = (personId) => {
-    personService
-    .remove(personId);
-    setPersons(persons.filter(person => person.id !== personId));
-    setMessage("Number deleted.")
+    personService.remove(personId);
+    setPersons(persons.filter((person) => person.id !== personId));
+    setMessage("Number deleted.");
     setTimeout(() => {
-      setMessage(null)
-    }, 5000)
+      setMessage(null);
+    }, 5000);
   };
 
   const handleNameChange = (event) => {
@@ -90,7 +97,10 @@ const App = () => {
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange}
       ></NewNumber>
-      <Numbers personsToShow={personsToShow} removePerson={removePerson}></Numbers>
+      <Numbers
+        personsToShow={personsToShow}
+        removePerson={removePerson}
+      ></Numbers>
     </div>
   );
 };
