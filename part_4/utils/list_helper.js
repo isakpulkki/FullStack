@@ -59,26 +59,10 @@ const mostLikes = (blogs) => {
   );
 };
 
-const initialBlogs = [
-  {
-    title: "Kissakirja",
-    author: "Dani Huusanen",
-    url: "www.kissakirja.fi",
-    likes: 3,
-  },
-  {
-    title: "Koirakirja",
-    author: "Oskari Puusanen",
-    url: "www.koirakirja.fi",
-    likes: 1,
-  },
-];
-
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
   mostLikes,
-  initialBlogs
 };
