@@ -89,6 +89,33 @@ describe("When a blog is added...", () => {
     assert.strictEqual(response.status, 400);
   });
 });
+
+test("Blog can be removed by ID.", async () => {
+  const response = await api.get("/api/blogs");
+  await api.delete("/api/blogs/" + response.body[0].id).expect(204);
+  const secondResponse = await api.get("/api/blogs");
+  assert.strictEqual(secondResponse.body.length, response.body.length - 1);
+});
+
+test("Blog can be edited by ID.", async () => {
+  const response = await api.get("/api/blogs");
+  const toBeEdited = response.body[0];
+  const updatedBlog = {
+    title: toBeEdited.title,
+    author: toBeEdited.author,
+    url: toBeEdited.url,
+    likes: toBeEdited.likes + 1,
+  };
+  await api
+    .put("/api/blogs/" + toBeEdited.id)
+    .send(updatedBlog)
+    .expect(200);
+
+  const secondResponse = await api.get("/api/blogs");
+  const blog = secondResponse.body.find((blog) => blog.id == toBeEdited.id);
+  assert.strictEqual(blog.likes, toBeEdited.likes + 1);
+});
+
 after(async () => {
   await mongoose.connection.close();
 });
