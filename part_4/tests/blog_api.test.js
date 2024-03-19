@@ -5,6 +5,8 @@ const supertest = require("supertest");
 const app = require("../app");
 const api = supertest(app);
 const Blog = require("../models/blog");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
 
 const initialBlogs = [
   {
@@ -42,12 +44,17 @@ test("Blogs have id -field.", async () => {
   const response = await api.get("/api/blogs");
   assert(response.body[0].id);
 });
-describe("When a blog is added...", () => {
+describe("When a blog is added...", async () => {
+  await User.deleteMany({});
+  const passwordHash = await bcrypt.hash("Secret", 10);
+  const user = await new User({ username: "Root", passwordHash }).save();
+
   test("...Length of blogs has risen by one.", async () => {
     const newBlog = {
       title: "Lehmäkirja",
       author: "Toni Kuusanen",
       url: "www.lehmäkirja.fi",
+      userId: user.id,
     };
     await api
       .post("/api/blogs")
@@ -64,6 +71,7 @@ describe("When a blog is added...", () => {
       title: "Lehmäkirja",
       author: "Toni Kuusanen",
       url: "www.lehmäkirja.fi",
+      userId: user.id,
     };
     await api
       .post("/api/blogs")
@@ -81,6 +89,7 @@ describe("When a blog is added...", () => {
     const blogWithoutURL = {
       title: "Lehmäkirja",
       author: "Toni Kuusanen",
+      userId: user.id,
     };
     const response = await api
       .post("/api/blogs")
@@ -103,6 +112,7 @@ test("Blog can be edited by ID.", async () => {
   const updatedBlog = {
     title: toBeEdited.title,
     author: toBeEdited.author,
+
     url: toBeEdited.url,
     likes: toBeEdited.likes + 1,
   };
