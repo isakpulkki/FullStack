@@ -1,9 +1,9 @@
-const bcrypt = require("bcrypt");
-const usersRouter = require("express").Router();
-const User = require("../models/user");
+const bcrypt = require('bcrypt');
+const usersRouter = require('express').Router();
+const User = require('../models/user');
 
-usersRouter.get("/", async (request, response) => {
-  const users = await User.find({}).populate("blogs", {
+usersRouter.get('/', async (request, response) => {
+  const users = await User.find({}).populate('blogs', {
     url: 1,
     title: 1,
     author: 1,
@@ -11,24 +11,24 @@ usersRouter.get("/", async (request, response) => {
   response.json(users);
 });
 
-usersRouter.post("/", async (request, response) => {
+usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body;
 
   const isUser = await User.findOne({ username });
 
   if (isUser) {
-    return response.status(400).json({ error: "Username is not unique." });
+    return response.status(400).json({ error: 'Username is not unique.' });
   }
 
   if (username.length < 3) {
     return response.status(400).json({
-      error: "Username is too short.",
+      error: 'Username is too short.',
     });
   }
 
   if (password.length < 3) {
     return response.status(400).json({
-      error: "Password is too short.",
+      error: 'Password is too short.',
     });
   }
 
