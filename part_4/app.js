@@ -28,6 +28,6 @@ app.use(express.json());
 app.use(middleware.tokenExtractor);
 app.use('/api/users', usersRouter);
 app.use('/api/blogs', blogsRouter);
-app.use('/login', loginRouter);
+app.use('/api/login', loginRouter);
 
 module.exports = app;
