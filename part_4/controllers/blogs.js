@@ -50,6 +50,7 @@ blogsRouter.delete(
 blogsRouter.put('/:id', async (request, response) => {
   const body = request.body;
   const blog = {
+    user: body.user,
     title: body.title,
     author: body.author,
     url: body.url,
@@ -57,7 +58,7 @@ blogsRouter.put('/:id', async (request, response) => {
   };
   const newBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
     new: true,
-  });
+  }).populate('user', { username: 1, name: 1 });
   response.json(newBlog);
 });
 

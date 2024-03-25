@@ -1,23 +1,48 @@
-const NewBlog = (props) => {
+import { useState } from 'react';
+
+const NewBlog = ({ createBlog }) => {
+  const [newTitle, setNewTitle] = useState('');
+  const [newAuthor, setNewAuthor] = useState('');
+  const [newURL, setNewURL] = useState('');
+
+  const addBlog = (event) => {
+    event.preventDefault();
+    const newBlog = { title: newTitle, author: newAuthor, url: newURL };
+    createBlog(newBlog);
+  };
+
+  const handleTitleChange = (event) => {
+    setNewTitle(event.target.value);
+  };
+
+  const handleAuthorChange = (event) => {
+    setNewAuthor(event.target.value);
+  };
+
+  const handleURLChange = (event) => {
+    setNewURL(event.target.value);
+  };
+
   return (
     <div>
       <h3>Add a new blog</h3>
-      <form onSubmit={props.addBlog}>
+      <form onSubmit={addBlog}>
         <div>
           <p>Title: </p>
-          <input value={props.newTitle} onChange={props.handleTitleChange} />
+          <input value={newTitle} onChange={handleTitleChange} />
         </div>
         <div>
           <p>Author: </p>
-          <input value={props.newAuthor} onChange={props.handleAuthorChange} />
+          <input value={newAuthor} onChange={handleAuthorChange} />
         </div>
         <div>
           <p>URL: </p>
-          <input value={props.newURL} onChange={props.handleURLChange} />
+          <input value={newURL} onChange={handleURLChange} />
         </div>
         <br></br>
         <button type="submit">Add</button>
       </form>
+      <br></br>
     </div>
   );
 };
