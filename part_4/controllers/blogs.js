@@ -26,8 +26,9 @@ blogsRouter.post('/', middleware.userExtractor, async (request, response) => {
     response.send('Blog needs a title or a URL.');
   } else {
     const savedBlog = await blog.save();
-    request.user.logs = request.user.blogs.concat(savedBlog.id);
+    request.user.blogs = request.user.blogs.concat(savedBlog.id);
     await request.user.save();
+    await savedBlog.populate('user', { username: 1, name: 1 });
     response.status(201).json(savedBlog);
   }
 });
