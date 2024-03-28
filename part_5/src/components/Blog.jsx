@@ -18,7 +18,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
 
   if (visible) {
     return (
-      <div style={blogStyle}>
+      <div className="blog" style={blogStyle}>
         {blog.title}
         <br></br>
         URL: {blog.url}
@@ -41,7 +41,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
     )
   } else {
     return (
-      <div style={blogStyle}>
+      <div id="blog" style={blogStyle}>
         <div>{blog.title}</div>
         <div>
           <button onClick={() => toggleVisibility()}>Show</button>
